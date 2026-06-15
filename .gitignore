@@ -24,3 +24,10 @@ backend/venv/
 # Scratch files
 scratch/
 
+# Pliki robocze - nie sa czescia kodu
+MALIN.pdf
+malin_ascii.txt
+malin_output.txt
+parse_qr.py
+bernardyn.docx
+LocalQrDatabase.kt
