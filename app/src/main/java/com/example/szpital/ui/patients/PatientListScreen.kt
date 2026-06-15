@@ -37,7 +37,6 @@ fun PatientListScreen(
     vm: PatientsViewModel = viewModel()
 ) {
     val uiState    by vm.uiState.collectAsState()
-    val freeTags   by vm.freeTags.collectAsState()
     val actionError by vm.actionError.collectAsState()
 
     var showAddDialog by remember { mutableStateOf(false) }
@@ -58,10 +57,9 @@ fun PatientListScreen(
         pendingTagPatient = null
     }
 
-    // Odśwież pacjentów i wolne tagi przy otwarciu ekranu
+    // Odśwież pacjentów przy otwarciu ekranu
     LaunchedEffect(Unit) {
         vm.loadPatients()
-        vm.loadFreeTags()
     }
 
     // Error notification
@@ -398,59 +396,4 @@ fun AddPatientDialog(
     )
 }
 
-@Composable
-fun AssignTagDialog(
-    patient:   PatientResponse,
-    freeTags:  List<String>,
-    onDismiss: () -> Unit,
-    onConfirm: (tagId: String) -> Unit
-) {
-    var selectedTag by remember { mutableStateOf(freeTags.firstOrNull() ?: "") }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title  = { Text("Przypisz tag QR", fontWeight = FontWeight.Bold) },
-        text   = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Pacjent: ${patient.name}",
-                    style = MaterialTheme.typography.bodyMedium)
-                if (freeTags.isEmpty()) {
-                    Text("Brak wolnych tagów QR!",
-                        color = MaterialTheme.colorScheme.error)
-                } else {
-                    Text("Wybierz wolny tag:",
-                        style = MaterialTheme.typography.labelMedium)
-                    freeTags.forEach { tagId ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier          = Modifier
-                                .fillMaxWidth()
-                                .clickable { selectedTag = tagId }
-                                .padding(vertical = 4.dp)
-                        ) {
-                            RadioButton(
-                                selected = selectedTag == tagId,
-                                onClick  = { selectedTag = tagId }
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Icon(Icons.Default.QrCode, null,
-                                modifier = Modifier.size(18.dp),
-                                tint     = MaterialTheme.colorScheme.primary)
-                            Spacer(Modifier.width(6.dp))
-                            Text(tagId, fontWeight = FontWeight.Medium)
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick  = { if (selectedTag.isNotBlank()) onConfirm(selectedTag) },
-                enabled  = freeTags.isNotEmpty() && selectedTag.isNotBlank()
-            ) { Text("Przypisz") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Anuluj") }
-        }
-    )
-}

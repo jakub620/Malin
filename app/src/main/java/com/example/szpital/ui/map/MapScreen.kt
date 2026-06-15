@@ -33,7 +33,7 @@ fun MapScreen(
     location: PatientLocation,
     onBack: () -> Unit
 ) {
-    var selectedFloor by remember { mutableStateOf(location.floor ?: 0) }
+    var selectedFloor by remember { mutableStateOf(location.floor ?: 1) }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -46,8 +46,15 @@ fun MapScreen(
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1
                     )
-                    val floorText = if (location.floor != null && location.floor > 0)
-                        "Piętro ${location.floor}" else "Parter"
+                    val floorText = when (location.floor) {
+                        1 -> "Parter"
+                        2 -> "Piętro 1"
+                        3 -> "Piętro 2"
+                        4 -> "Piętro 3"
+                        5 -> "Piętro 4"
+                        6 -> "Poddasze"
+                        else -> "Brak"
+                    }
                     Text(
                         text  = "Tag: ${location.qrText}  •  $floorText",
                         style = MaterialTheme.typography.labelSmall
@@ -85,9 +92,14 @@ fun MapScreen(
                 Column {
                     Text(location.label ?: location.qrText, fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyMedium)
-                    val floorLabel = when {
-                        location.floor == null || location.floor == 0 -> "Parter"
-                        else -> "Piętro ${location.floor}"
+                    val floorLabel = when (location.floor) {
+                        1 -> "Parter"
+                        2 -> "Piętro 1"
+                        3 -> "Piętro 2"
+                        4 -> "Piętro 3"
+                        5 -> "Piętro 4"
+                        6 -> "Poddasze"
+                        else -> "Brak"
                     }
                     Text("$floorLabel  •  Tag: ${location.qrText}",
                         style = MaterialTheme.typography.bodySmall,
@@ -115,13 +127,24 @@ fun MapScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    val floors = (0..6).toList()
+                    val floors = (1..6).toList()
                     items(floors) { f ->
                         val isSelected = selectedFloor == f
                         FilterChip(
                             selected = isSelected,
                             onClick = { selectedFloor = f },
-                            label = { Text(if (f == 0) "Parter" else "Piętro $f") },
+                            label = {
+                                val labelText = when (f) {
+                                    1 -> "Parter"
+                                    2 -> "Piętro 1"
+                                    3 -> "Piętro 2"
+                                    4 -> "Piętro 3"
+                                    5 -> "Piętro 4"
+                                    6 -> "Poddasze"
+                                    else -> "P$f"
+                                }
+                                Text(labelText)
+                            },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -234,7 +257,16 @@ fun OsmMapView(
                 Marker(mv).apply {
                     position = GeoPoint(location.latitude, location.longitude)
                     title    = "👤 PACJENT: ${location.label}"
-                    snippet  = "Piętro $selectedFloor"
+                    val labelText = when (selectedFloor) {
+                        1 -> "Parter"
+                        2 -> "Piętro 1"
+                        3 -> "Piętro 2"
+                        4 -> "Piętro 3"
+                        5 -> "Piętro 4"
+                        6 -> "Poddasze"
+                        else -> "Piętro ${selectedFloor - 1}"
+                    }
+                    snippet  = labelText
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     mv.overlays.add(this)
                 }

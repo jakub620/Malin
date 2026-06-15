@@ -2,8 +2,8 @@
 Hospital Patient Location Backend
 FastAPI + sqlite3 (wbudowany w Python – zero dodatkowych zależności)
 
-Uruchom: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-Dokumentacja: http://localhost:8000/docs
+Uruchom: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+Dokumentacja: http://localhost:8001/docs
 """
 
 import asyncio

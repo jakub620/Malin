@@ -48,7 +48,7 @@ fun AppNavigation() {
                 if (loc != null) {
                     lat = loc.lat ?: 52.22070
                     lng = loc.lng ?: 21.01018
-                    floor = loc.floor ?: 0
+                    floor = loc.floor ?: 1
                     label = "${patient.name} – ${loc.locationLabel ?: "Brak lokalizacji"}"
                 } else if (localEntry != null) {
                     val coords = com.example.szpital.data.local.LocalQrDatabase.convertToWgs84(localEntry.x, localEntry.y)
@@ -59,7 +59,7 @@ fun AppNavigation() {
                 } else {
                     lat = 52.22070
                     lng = 21.01018
-                    floor = 0
+                    floor = 1
                     label = "${patient.name} – Brak lokalizacji"
                 }
 
